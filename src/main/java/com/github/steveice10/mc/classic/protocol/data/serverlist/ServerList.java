@@ -1,5 +1,9 @@
 package com.github.steveice10.mc.classic.protocol.data.serverlist;
 
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONArray;
+import com.alibaba.fastjson2.JSONObject;
+
 import com.github.steveice10.mc.classic.protocol.exception.AuthenticationException;
 
 import java.io.BufferedReader;
@@ -23,24 +27,41 @@ public class ServerList {
     static {
         CookieHandler.setDefault(new CookieManager(null, CookiePolicy.ACCEPT_ALL));
     }
+    private static final String API_SERVERS = "https://www.classicube.net/api/servers";
+    private static final String API_LOGIN = "https://www.classicube.net/api/login";
 
     /**
-     * Logs in to minecraft.net.
+     * Logs in to classicube.net.
      *
      * @param username Username to log in with.
      * @param password Password to log in with.
-     * @throws AuthenticationException If an error occurs while authenticating with minecraft.net.
+     * @throws AuthenticationException If an error occurs while authenticating with classicube.net.
      */
-    public static void login(String username, String password) throws AuthenticationException {
-        String result;
+    public static String login(String username, String password) throws AuthenticationException {
         try {
-            result = fetchUrl("https://minecraft.net/login", "username=" + URLEncoder.encode(username, "UTF-8") + "&password=" + URLEncoder.encode(password, "UTF-8"));
-        } catch(UnsupportedEncodingException e) {
-            throw new AuthenticationException("UTF-8 encoding not supported.");
-        }
+            String initialResponse = fetchUrl(API_LOGIN, "", "GET");
+            JSONObject initialJson = JSON.parseObject(initialResponse);
+        
+            String initialToken = initialJson.getString("token");
+            if (initialToken == null) {
+                 throw new AuthenticationException("Login attempt unsuccessful.");
+            }
 
-        if(!result.contains("Logged in as")) {
-            throw new AuthenticationException("Login attempt unsuccessful. Response: \n" + result);
+            String params = "username=" + URLEncoder.encode(username, "UTF-8") 
+                      + "&password=" + URLEncoder.encode(password, "UTF-8")
+                      + "&token=" + URLEncoder.encode(initialToken, "UTF-8");
+        
+            String authResponse = fetchUrl(API_LOGIN, params, "POST");
+            JSONObject authJson = JSON.parseObject(authResponse);
+
+            if (authJson.getBooleanValue("authenticated")) {
+                return authJson.getString("token");
+            } else {
+                JSONArray errors = authJson.getJSONArray("errors");
+                throw new AuthenticationException("Login attempt unsuccessful: " + (errors != null ? errors.toString() : "Incorrect credentials"));
+            }
+        } catch (IOException e) {
+            throw new AuthenticationException("Login attempt unsuccessful.");
         }
     }
 
@@ -50,20 +71,21 @@ public class ServerList {
      * @return A map of servers' names and list information.
      */
     public static Map<String, ServerListInfo> getServers() {
-        Map<String, ServerListInfo> servers = new HashMap<String, ServerListInfo>();
-        String data = fetchUrl("https://minecraft.net/classic/list", "");
-        int index = data.indexOf("<a href=\"");
-        while((index = data.indexOf("classic/play/", index)) != -1) {
-            String id = data.substring(index + 13, data.indexOf("\"", index));
-            index = data.indexOf(">", index) + 1;
-            String name = data.substring(index, data.indexOf("</a>", index)).replaceAll("&amp;", "&").replaceAll("&hellip;", "...");
-            index = data.indexOf("<td>", index) + 4;
-            String users = data.substring(index, data.indexOf("</td>", index));
-            index = data.indexOf("<td>", index) + 4;
-            String max = data.substring(index, data.indexOf("</td>", index));
-            index = data.indexOf("<td>", index) + 4;
-            String uptime = data.substring(index, data.indexOf("</td>", index));
-            servers.put(name, new ServerListInfo(name, "https://minecraft.net/classic/play/" + id, Integer.valueOf(users), Integer.valueOf(max), uptime));
+        Map<String, ServerListInfo> servers = new HashMap<>();
+        String response = fetchUrl(API_SERVERS, "", "GET");
+        
+        JSONObject root = JSON.parseObject(response);
+        JSONArray serversArray = root.getJSONArray("servers");
+
+        for (int i = 0; i < serversArray.size(); i++) {
+            JSONObject s = serversArray.getJSONObject(i);
+            
+            String name = s.getString("name");
+            String hash = s.getString("hash");
+            int players = s.getIntValue("players");
+            int max = s.getIntValue("maxplayers");
+            String uptime = "N/A";
+            servers.put(name, new ServerListInfo("https://www.classicube.net/server/play/" + hash, name, players, max, uptime));
         }
 
         return servers;
@@ -86,69 +108,50 @@ public class ServerList {
      * @return The server's URL information.
      */
     public static ServerURLInfo getServerURLInfo(String url) {
-        String play = fetchUrl(url, "");
-        String mppass = getAppletParameter(play, "mppass");
-        if(!mppass.isEmpty()) {
-            String username = getAppletParameter(play, "username");
-            String server = getAppletParameter(play, "server");
-            int port = 25565;
-            try {
-                port = Integer.parseInt(getAppletParameter(play, "port"));
-            } catch(NumberFormatException e) {
+        String hash = serverUrl.substring(serverUrl.lastIndexOf("/") + 1);
+        
+        String response = fetchUrl(API_SERVERS, "", "GET");
+        JSONObject root = JSON.parseObject(response);
+        JSONArray serversArray = root.getJSONArray("servers");
+
+        for (int i = 0; i < serversArray.size(); i++) {
+            JSONObject s = serversArray.getJSONObject(i);
+            if (s.getString("hash").equals(hash)) {
+                return new ServerURLInfo(
+                    s.getString("ip"),
+                    s.getIntValue("port"),
+                    s.getString("name"),
+                    s.getString("hash")
+                );
             }
-
-            return new ServerURLInfo(server, port, username, mppass);
         }
-
         return null;
     }
 
-    private static String fetchUrl(String url, String params) {
-        BufferedReader reader = null;
+    private static String fetchUrl(String urlStr, String params, String method) {
+        StringBuilder sb = new StringBuilder();
         try {
-            URLConnection conn = new URL(url).openConnection();
-            conn.setReadTimeout(30000);
-            conn.setConnectTimeout(10000);
-            conn.setDoInput(true);
-            if(!params.isEmpty()) {
-                conn.addRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-                conn.addRequestProperty("Content-Length", Integer.toString(params.length()));
+            URL url = new URL(urlStr);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestProperty("User-Agent", "ClassicProtocolLib");
+            conn.setRequestMethod(method);
+            conn.setConnectTimeout(5000);
+
+            if (method.equals("POST") && !params.isEmpty()) {
                 conn.setDoOutput(true);
-                OutputStream out = null;
-                try {
-                    out = conn.getOutputStream();
-                    out.write(params.getBytes("UTF-8"));
-                    out.flush();
-                    out.close();
-                } finally {
-                    try {
-                        out.close();
-                    } catch(IOException e) {
-                    }
+                try (OutputStream os = conn.getOutputStream()) {
+                    os.write(params.getBytes("UTF-8"));
                 }
             }
 
-            reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-            StringBuilder build = new StringBuilder();
-            String line;
-            while((line = reader.readLine()) != null) {
-                build.append(line);
-                build.append("\n");
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
+                String line;
+                while ((line = reader.readLine()) != null) sb.append(line);
             }
-
-            return build.toString();
-        } catch(IOException e) {
-            e.printStackTrace();
-        } finally {
-            if(reader != null) {
-                try {
-                    reader.close();
-                } catch(IOException e) {
-                }
-            }
+        } catch (Exception e) {
+            return "{}";
         }
-
-        return "";
+        return sb.toString();
     }
 
     private static String getAppletParameter(String page, String param) {
