@@ -10,20 +10,20 @@ import com.github.steveice10.packetlib.event.server.ServerClosingEvent;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.MalformedURLException;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.security.SecureRandom;
+import java.math.BigInteger;
 
-/**
- * Listener used on Minecraft Classic servers for verifying users and sending heartbeats to the Minecraft Classic server list.
- */
 public class VerifyUsersListener extends ServerAdapter {
     private Heartbeat heartbeat;
 
     @Override
     public void serverBound(ServerBoundEvent event) {
-        event.getServer().setGlobalFlag(ClassicConstants.SALT_KEY, String.valueOf(new SecureRandom().nextLong()));
+        String salt = new BigInteger(130, new SecureRandom()).toString(32);
+        event.getServer().setGlobalFlag(ClassicConstants.SALT_KEY, salt);
+        
         this.heartbeat = new Heartbeat(event.getServer());
         new Thread(this.heartbeat, "HeartbeatThread").start();
     }
@@ -38,8 +38,9 @@ public class VerifyUsersListener extends ServerAdapter {
 
     private static class Heartbeat implements Runnable {
         private Server server;
-
         private boolean beating = true;
+        private static final int BEAT_INTERVAL = 45000;
+        private static final String HEARTBEAT_URL = "https://www.classicube.net/server/heartbeat/";
 
         public Heartbeat(Server server) {
             this.server = server;
@@ -51,45 +52,59 @@ public class VerifyUsersListener extends ServerAdapter {
 
         @Override
         public void run() {
+            long lastBeat = System.currentTimeMillis() - BEAT_INTERVAL;
             while(this.beating) {
-                if(this.server.hasGlobalFlag(ClassicConstants.SERVER_INFO_BUILDER_KEY)) {
-                    BufferedReader reader = null;
-                    try {
-                        ServerInfo info = this.server.<ServerInfoBuilder>getGlobalFlag(ClassicConstants.SERVER_INFO_BUILDER_KEY).build(this.server);
-                        StringBuilder build = new StringBuilder("https://minecraft.net/heartbeat.jsp?");
-                        build.append("name=").append(URLEncoder.encode(info.getName(), "UTF-8")).append("&");
-                        build.append("port=").append(URLEncoder.encode(String.valueOf(info.getPort()), "UTF-8")).append("&");
-                        build.append("max=").append(URLEncoder.encode(String.valueOf(info.getMaxPlayers()), "UTF-8")).append("&");
-                        build.append("public=").append(URLEncoder.encode(String.valueOf(info.isPublic()), "UTF-8")).append("&");
-                        build.append("version=").append(URLEncoder.encode(String.valueOf(ClassicConstants.PROTOCOL_VERSION), "UTF-8")).append("&");
-                        build.append("salt=").append(URLEncoder.encode(this.server.<String>getGlobalFlag(ClassicConstants.SALT_KEY), "UTF-8")).append("&");
-                        build.append("users=").append(URLEncoder.encode(String.valueOf(info.getPlayers()), "UTF-8"));
-                        reader = new BufferedReader(new InputStreamReader(new URL(build.toString()).openStream()));
-                        String resp = reader.readLine();
-                        try {
-                            new URL(resp);
-                            this.server.setGlobalFlag(ClassicConstants.SERVER_URL_KEY, resp);
-                        } catch(MalformedURLException e) {
-                            System.err.println("Error while performing minecraft.net heartbeat: \"" + resp + "\"");
-                        }
-                    } catch(Exception e) {
-                        System.err.println("Failed to perform minecraft.net heartbeat.");
-                        e.printStackTrace();
-                    } finally {
-                        if(reader != null) {
-                            try {
-                                reader.close();
-                            } catch(IOException e) {
-                            }
-                        }
-                    }
+                long time = System.currentTimeMillis();
+                if(time - lastBeat >= BEAT_INTERVAL) {
+                    lastBeat = time;
+                    sendBeat();
                 }
-
+                
                 try {
-                    Thread.sleep(45000);
+                    Thread.sleep(1000);
                 } catch(InterruptedException e) {
                     break;
                 }
+            }
+        }
+
+        private void sendBeat() {
+            if(!this.server.hasGlobalFlag(ClassicConstants.SERVER_INFO_BUILDER_KEY)) return;
+
+            BufferedReader reader = null;
+            try {
+                ServerInfo info = this.server.<ServerInfoBuilder>getGlobalFlag(ClassicConstants.SERVER_INFO_BUILDER_KEY).build(this.server);
+                String salt = this.server.getGlobalFlag(ClassicConstants.SALT_KEY);
+
+                StringBuilder query = new StringBuilder();
+                query.append("name=").append(URLEncoder.encode(info.getName(), "UTF-8"));
+                query.append("&port=").append(info.getPort());
+                query.append("&users=").append(info.getPlayers());
+                query.append("&max=").append(info.getMaxPlayers());
+                query.append("&public=").append(info.isPublic());
+                query.append("&salt=").append(URLEncoder.encode(salt, "UTF-8"));
+                query.append("&software=").append(URLEncoder.encode("ClassicProtocolLib", "UTF-8"));
+                query.append("&web=false");
+
+                URL url = new URL(HEARTBEAT_URL + "?" + query.toString());
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestProperty("User-Agent", "ClassicProtocolLib");
+                conn.setConnectTimeout(10000);
+
+                reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                String resp = reader.readLine();
+
+                if (resp != null && resp.startsWith("http")) {
+                    this.server.setGlobalFlag(ClassicConstants.SERVER_URL_KEY, resp);
+                } else {
+                    System.err.println("ClassiCube Heartbeat fail: " + resp);
+                }
+
+            } catch(Exception e) {
+                System.err.println("Error heartbeat to ClassiCube.");
+                e.printStackTrace();
+            } finally {
+                if(reader != null) try { reader.close(); } catch(IOException ignored) {}
             }
         }
     }
