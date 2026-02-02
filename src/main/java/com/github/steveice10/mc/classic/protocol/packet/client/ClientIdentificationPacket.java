@@ -16,6 +16,7 @@ public class ClientIdentificationPacket implements Packet {
     private String username;
     private String verificationKey;
     private int unused;
+    private boolean isCpe;
 
     @SuppressWarnings("unused")
     private ClientIdentificationPacket() {
@@ -43,6 +44,27 @@ public class ClientIdentificationPacket implements Packet {
         this.username = username;
         this.verificationKey = verificationKey;
         this.unused = unused;
+        if(((byte) unused) == 0x42){
+			this.isCpe = true;
+		}
+    }
+    /**
+     * Creates a new ClientIdentificationPacket instance.
+     *
+     * @param username        Username of the client.
+     * @param verificationKey Verification key of the client.
+     * @param isCpe          Support CPE.
+     */
+    public ClientIdentificationPacket(String username, String verificationKey, boolean isCpe) {
+        this.protocolVersion = ClassicConstants.PROTOCOL_VERSION;
+        this.username = username;
+        this.verificationKey = verificationKey;
+        if(isCpe){
+            this.unused = 0x42;
+        }else{
+            this.unused = 0;
+        }
+		this.isCpe = isCpe;
     }
 
     /**
@@ -81,12 +103,19 @@ public class ClientIdentificationPacket implements Packet {
         return this.unused;
     }
 
+    public boolean isCPE(){
+        return this.isCpe;
+    }
+
     @Override
     public void read(NetInput in) throws IOException {
         this.protocolVersion = in.readUnsignedByte();
         this.username = ClassicPacketUtil.readString(in).replaceAll("[^A-Za-z0-9_-]+", "");
         this.verificationKey = ClassicPacketUtil.readString(in);
         this.unused = in.readUnsignedByte();
+        if(((byte) unused) == 0x42){
+			this.isCpe = true;
+		}
     }
 
     @Override
