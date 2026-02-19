@@ -12,13 +12,13 @@ public class ServerHackControlPacket implements Packet {
     private boolean speeding;
     private boolean spawnControl;
     private boolean thirdPerson;
-    private int jumpHeight;
+    private short jumpHeight;
 
     @SuppressWarnings("unused")
     private ServerHackControlPacket() {
     }
 
-    public ServerHackControlPacket(boolean flying, boolean noclip, boolean speeding, boolean spawnControl, boolean thirdPerson, int jumpHeight) {
+    public ServerHackControlPacket(boolean flying, boolean noclip, boolean speeding, boolean spawnControl, boolean thirdPerson, short jumpHeight) {
         this.flying = flying;
         this.noclip = noclip;
         this.speeding = speeding;
@@ -42,7 +42,7 @@ public class ServerHackControlPacket implements Packet {
     public boolean getThirdPerson(){
         return this.thirdPerson;
     }
-    public int getJumpHeight(){
+    public short getJumpHeight(){
         return this.jumpHeight;
     }
 
