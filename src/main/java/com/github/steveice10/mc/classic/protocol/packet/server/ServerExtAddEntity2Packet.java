@@ -37,9 +37,9 @@ public class ServerExtAddEntity2Packet implements Packet {
         this.entityId = in.readUnsignedByte();
         this.name = ClassicPacketUtil.readString(in);
         this.skin = ClassicPacketUtil.readString(in);
-        this.x = (short) in.readShort() / 32;
-        this.y = (short) in.readShort() / 32;
-        this.z = (short) in.readShort() / 32;
+        this.x = ((short) in.readShort() / 32);
+        this.y = ((short) in.readShort() / 32);
+        this.z = ((short) in.readShort() / 32);
         this.yaw = in.readUnsignedByte();
         this.pitch = in.readUnsignedByte();
     }
