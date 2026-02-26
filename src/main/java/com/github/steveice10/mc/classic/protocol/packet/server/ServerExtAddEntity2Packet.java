@@ -11,9 +11,9 @@ public class ServerExtAddEntity2Packet implements Packet {
     private int entityId;
     private String name;
     private String skin;
-    private int x;
-    private int y;
-    private int z;
+    private short x;
+    private short y;
+    private short z;
     private int yaw;
     private int pitch;
 
@@ -21,7 +21,7 @@ public class ServerExtAddEntity2Packet implements Packet {
     private ServerExtAddEntity2Packet() {
     }
 
-    public ServerExtAddEntity2Packet(int entityId, String name, String skin, int x, int y, int z, int yaw, int pitch) {
+    public ServerExtAddEntity2Packet(int entityId, String name, String skin, short x, short y, short z, int yaw, int pitch) {
         this.entityId = entityId;
         this.name = name;
         this.skin = skin;
@@ -62,6 +62,9 @@ public class ServerExtAddEntity2Packet implements Packet {
 
     public int getYaw() { return yaw; }
     public int getPitch() { return pitch; }
+    public short getX() { return x; }
+    public short getY() { return y; }
+    public short getZ() { return z; }
 
     @Override public boolean isPriority() { return false; }
 }
