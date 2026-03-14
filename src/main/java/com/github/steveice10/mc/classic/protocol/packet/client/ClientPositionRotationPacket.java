@@ -139,6 +139,14 @@ public class ClientPositionRotationPacket implements Packet {
         }
         this.yaw = (in.readUnsignedByte() * 360) / 256f;
         this.pitch = (in.readUnsignedByte() * 360) / 256f;
+        System.out.println(String.valueOf(this.unused));
+        System.out.println(String.valueOf(this.x));
+        System.out.println(String.valueOf(this.y));
+        System.out.println(String.valueOf(this.z));
+        System.out.println(String.valueOf(this.yaw));
+        System.out.println(String.valueOf(this.pitch));
+        System.out.println(String.valueOf(in.avaible()));
+        System.out.println(String.valueOf(this.isCpe));
     }
 
     @Override
