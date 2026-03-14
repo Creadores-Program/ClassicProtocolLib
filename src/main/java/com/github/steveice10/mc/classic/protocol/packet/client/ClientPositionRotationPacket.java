@@ -121,7 +121,7 @@ public class ClientPositionRotationPacket implements Packet {
 
     //is ExtEntitysPositions enabled
     public boolean isCPE(){
-        return this.isCpe
+        return this.isCpe;
     }
 
     @Override
