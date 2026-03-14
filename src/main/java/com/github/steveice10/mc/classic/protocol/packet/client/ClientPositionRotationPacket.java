@@ -145,7 +145,7 @@ public class ClientPositionRotationPacket implements Packet {
         System.out.println(String.valueOf(this.z));
         System.out.println(String.valueOf(this.yaw));
         System.out.println(String.valueOf(this.pitch));
-        System.out.println(String.valueOf(in.avaible()));
+        System.out.println(String.valueOf(in.available()));
         System.out.println(String.valueOf(this.isCpe));
     }
 
