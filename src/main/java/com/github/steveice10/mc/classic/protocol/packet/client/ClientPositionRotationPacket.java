@@ -16,6 +16,7 @@ public class ClientPositionRotationPacket implements Packet {
     private float z;
     private float yaw;
     private float pitch;
+    private boolean isCpe;
 
     @SuppressWarnings("unused")
     private ClientPositionRotationPacket() {
@@ -31,7 +32,12 @@ public class ClientPositionRotationPacket implements Packet {
      * @param pitch Pitch of the client.
      */
     public ClientPositionRotationPacket(float x, float y, float z, float yaw, float pitch) {
-        this(255, x, y, z, yaw, pitch);
+        this(255, x, y, z, yaw, pitch, false);
+    }
+
+    //is ExtEntitysPositions enabled
+    public ClientPositionRotationPacket(float x, float y, float z, float yaw, float pitch, boolean isCpe) {
+        this(255, x, y, z, yaw, pitch, isCpe);
     }
 
     /**
@@ -45,12 +51,18 @@ public class ClientPositionRotationPacket implements Packet {
      * @param pitch  Pitch of the client.
      */
     public ClientPositionRotationPacket(int unused, float x, float y, float z, float yaw, float pitch) {
+        this(unused, x, y, z, yaw, pitch, false);
+    }
+
+    //is ExtEntitysPositions enabled
+    public ClientPositionRotationPacket(int unused, float x, float y, float z, float yaw, float pitch, boolean isCpe) {
         this.unused = unused;
         this.x = x;
         this.y = y;
         this.z = z;
         this.yaw = yaw;
         this.pitch = pitch;
+        this.isCpe = isCpe;
     }
 
     /**
@@ -107,6 +119,11 @@ public class ClientPositionRotationPacket implements Packet {
         return this.pitch;
     }
 
+    //is ExtEntitysPositions enabled
+    public boolean isCPE(){
+        return this.isCpe
+    }
+
     @Override
     public void read(NetInput in) throws IOException {
         this.unused = in.readUnsignedByte();
@@ -114,6 +131,7 @@ public class ClientPositionRotationPacket implements Packet {
             this.x = (float) in.readInt() / 32;
             this.y = (float) in.readInt() / 32;
             this.z = (float) in.readInt() / 32;
+            this.isCpe = true;
         }else{
             this.x = (float) in.readShort() / 32;
             this.y = (float) in.readShort() / 32;
@@ -126,9 +144,15 @@ public class ClientPositionRotationPacket implements Packet {
     @Override
     public void write(NetOutput out) throws IOException {
         out.writeByte(this.unused);
-        out.writeShort((short) (this.x * 32));
-        out.writeShort((short) (this.y * 32));
-        out.writeShort((short) (this.z * 32));
+        if(this.isCpe){
+            out.writeInt((int) (this.x * 32));
+            out.writeInt((int) (this.y * 32));
+            out.writeInt((int) (this.z * 32));
+        }else{
+            out.writeShort((short) (this.x * 32));
+            out.writeShort((short) (this.y * 32));
+            out.writeShort((short) (this.z * 32));
+        }
         out.writeByte((byte) ((int) (this.yaw * 256 / 360) & 255));
         out.writeByte((byte) ((int) (this.pitch * 256 / 360) & 255));
     }
