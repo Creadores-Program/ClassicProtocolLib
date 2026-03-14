@@ -28,7 +28,7 @@ public class ClientCustomBlockSupportLevelPacket implements Packet {
 
     @Override
     public void write(NetOutput out) throws IOException {
-        out.writeByte(this.supportLevel);
+        out.writeByte((byte) this.supportLevel);
     }
 
     @Override
