@@ -10,7 +10,7 @@ import java.io.IOException;
  * Packet header used by Minecraft Classic packets.
  */
 public class ClassicPacketHeader implements PacketHeader {
-    private static final int LENGTHS[] = new int[] {130, 0, 0, 1027, 6, 8, 7, 73, 9, 6, 4, 3, 1, 65, 65, 1};
+    private static final int MAXLENGTH = 1035;
 
     @Override
     public boolean isLengthVariable() {
@@ -38,8 +38,11 @@ public class ClassicPacketHeader implements PacketHeader {
 
     @Override
     public int readPacketId(NetInput in) throws IOException {
+        if(in.available() < 1){
+            return -1;
+        }
         int id = in.readUnsignedByte();
-        if(id >= 0 && id < LENGTHS.length && LENGTHS[id] > in.available()) {
+        if(in.available() > MAXLENGTH) {
             return -1;
         }
 
