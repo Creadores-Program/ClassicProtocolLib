@@ -31,13 +31,13 @@ public class ClientExtEntryPacket implements Packet {
 	@Override
 	public void read(NetInput in) throws IOException {
 		this.extName = ClassicPacketUtil.readString(in);
-    this.version = in.readUnsignedByte();
+        this.version = in.readInt();
 	}
 
 	@Override
 	public void write(NetOutput out) throws IOException {
 		ClassicPacketUtil.writeString(out, this.extName);
-    out.writeByte(this.version);
+        out.writeInt(this.version);
 	}
 
 	@Override
