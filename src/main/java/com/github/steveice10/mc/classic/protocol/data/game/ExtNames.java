@@ -61,11 +61,6 @@ public class ExtNames{
   public static final String PLAYERCLICK = "PlayerClick";
 
   /*
-   * Allows entities to appear at positions past 1023
-   */
-  public static final String EXTENTITYPOSITIONS = "ExtEntityPositions";
-
-  /*
    * Allows sending MOTD packets without also needing to resend map
    */
   public static final String INSTANTMOTD = "InstantMOTD";
