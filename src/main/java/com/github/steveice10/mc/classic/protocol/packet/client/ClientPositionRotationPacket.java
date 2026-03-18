@@ -123,15 +123,9 @@ public class ClientPositionRotationPacket implements Packet {
     @Override
     public void write(NetOutput out) throws IOException {
         out.writeByte(this.unused);
-        if(this.isCpe){
-            out.writeInt((int) (this.x * 32));
-            out.writeInt((int) (this.y * 32));
-            out.writeInt((int) (this.z * 32));
-        }else{
-            out.writeShort((short) (this.x * 32));
-            out.writeShort((short) (this.y * 32));
-            out.writeShort((short) (this.z * 32));
-        }
+        out.writeShort((short) (this.x * 32));
+        out.writeShort((short) (this.y * 32));
+        out.writeShort((short) (this.z * 32));
         out.writeByte((byte) ((int) (this.yaw * 256 / 360) & 255));
         out.writeByte((byte) ((int) (this.pitch * 256 / 360) & 255));
     }
