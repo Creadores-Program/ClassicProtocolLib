@@ -110,9 +110,9 @@ public class ClientPositionRotationPacket implements Packet {
     @Override
     public void read(NetInput in) throws IOException {
         this.unused = in.readUnsignedByte();
-        this.x = (float) in.readInt() / 32;
-        this.y = (float) in.readInt() / 32;
-        this.z = (float) in.readInt() / 32;
+        this.x = (float) in.readShort() / 32;
+        this.y = (float) in.readShort() / 32;
+        this.z = (float) in.readShort() / 32;
         this.yaw = (in.readUnsignedByte() * 360) / 256f;
         this.pitch = (in.readUnsignedByte() * 360) / 256f;
         if(in.available() > 0){
