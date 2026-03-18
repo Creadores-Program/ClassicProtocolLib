@@ -16,7 +16,6 @@ public class ClientPositionRotationPacket implements Packet {
     private float z;
     private float yaw;
     private float pitch;
-    private boolean isCpe;
 
     @SuppressWarnings("unused")
     private ClientPositionRotationPacket() {
@@ -32,12 +31,7 @@ public class ClientPositionRotationPacket implements Packet {
      * @param pitch Pitch of the client.
      */
     public ClientPositionRotationPacket(float x, float y, float z, float yaw, float pitch) {
-        this(255, x, y, z, yaw, pitch, false);
-    }
-
-    //is ExtEntitysPositions enabled
-    public ClientPositionRotationPacket(float x, float y, float z, float yaw, float pitch, boolean isCpe) {
-        this(255, x, y, z, yaw, pitch, isCpe);
+        this(255, x, y, z, yaw, pitch);
     }
 
     /**
@@ -51,18 +45,12 @@ public class ClientPositionRotationPacket implements Packet {
      * @param pitch  Pitch of the client.
      */
     public ClientPositionRotationPacket(int unused, float x, float y, float z, float yaw, float pitch) {
-        this(unused, x, y, z, yaw, pitch, false);
-    }
-
-    //is ExtEntitysPositions enabled
-    public ClientPositionRotationPacket(int unused, float x, float y, float z, float yaw, float pitch, boolean isCpe) {
         this.unused = unused;
         this.x = x;
         this.y = y;
         this.z = z;
         this.yaw = yaw;
         this.pitch = pitch;
-        this.isCpe = isCpe;
     }
 
     /**
@@ -119,34 +107,17 @@ public class ClientPositionRotationPacket implements Packet {
         return this.pitch;
     }
 
-    //is ExtEntitysPositions enabled
-    public boolean isCPE(){
-        return this.isCpe;
-    }
-
     @Override
     public void read(NetInput in) throws IOException {
         this.unused = in.readUnsignedByte();
-        if(in.available() > 9){
-            this.x = (float) in.readInt() / 32;
-            this.y = (float) in.readInt() / 32;
-            this.z = (float) in.readInt() / 32;
-            this.isCpe = true;
-        }else{
-            this.x = (float) in.readShort() / 32;
-            this.y = (float) in.readShort() / 32;
-            this.z = (float) in.readShort() / 32;
-        }
+        this.x = (float) in.readInt() / 32;
+        this.y = (float) in.readInt() / 32;
+        this.z = (float) in.readInt() / 32;
         this.yaw = (in.readUnsignedByte() * 360) / 256f;
         this.pitch = (in.readUnsignedByte() * 360) / 256f;
-        System.out.println(String.valueOf(this.unused));
-        System.out.println(String.valueOf(this.x));
-        System.out.println(String.valueOf(this.y));
-        System.out.println(String.valueOf(this.z));
-        System.out.println(String.valueOf(this.yaw));
-        System.out.println(String.valueOf(this.pitch));
-        System.out.println(String.valueOf(in.available()));
-        System.out.println(String.valueOf(this.isCpe));
+        if(in.available() > 0){
+            in.skipBytes(in.available());
+        }
     }
 
     @Override
