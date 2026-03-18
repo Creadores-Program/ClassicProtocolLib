@@ -116,7 +116,7 @@ public class ClientPositionRotationPacket implements Packet {
         this.yaw = (in.readUnsignedByte() * 360) / 256f;
         this.pitch = (in.readUnsignedByte() * 360) / 256f;
         if(in.available() > 0){
-            in.skipBytes(in.available());
+            in.readBytes(in.available());
         }
     }
 
