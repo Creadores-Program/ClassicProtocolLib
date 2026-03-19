@@ -50,6 +50,11 @@ public class ExtNames{
    */
   public static final String LONGERMESSAGES = "LongerMessages";
 
+  /**
+   * Allows using all code page 437 characters in chat
+   */
+  public static final String FULLCP437 = "FullCP437";
+
   /*
    * Allows sending block updates in a faster way
    */
