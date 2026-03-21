@@ -35,7 +35,7 @@ public class ServerChangeModelPacket implements Packet {
 
     @Override
     public void write(NetOutput out) throws IOException {
-        out.writeByte(this.entityId);
+        out.writeByte((byte) this.entityId);
         ClassicPacketUtil.writeString(out, this.modelName);
     }
 
