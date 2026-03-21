@@ -5,6 +5,8 @@ import com.github.steveice10.packetlib.Client;
 import com.github.steveice10.packetlib.ProxyInfo;
 import com.github.steveice10.packetlib.packet.PacketProtocol;
 import com.github.steveice10.packetlib.tcp.TcpSession;
+import com.github.steveice10.packetlib.tcp.TcpPacketEncryptor;
+import com.github.steveice10.packetlib.tcp.TcpPacketSizer;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.AddressedEnvelope;
