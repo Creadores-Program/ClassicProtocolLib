@@ -28,7 +28,7 @@ public class ServerEnvSetWeatherTypePacket implements Packet {
 
     @Override
     public void write(NetOutput out) throws IOException {
-        out.writeByte(this.weatherType);
+        out.writeByte((byte) this.weatherType);
     }
 
     @Override
