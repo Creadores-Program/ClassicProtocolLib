@@ -7,11 +7,11 @@ import com.github.steveice10.packetlib.packet.Packet;
 import java.io.IOException;
 
 public class ServerSetSpawnpointPacket implements Packet {
-    private int x;
-    private int y;
-    private int z;
-    private int yaw;
-    private int pitch;
+    private float x;
+    private float y;
+    private float z;
+    private float yaw;
+    private float pitch;
 
     @SuppressWarnings("unused")
     private ServerSetSpawnpointPacket() {
@@ -27,27 +27,27 @@ public class ServerSetSpawnpointPacket implements Packet {
 
     @Override
     public void read(NetInput in) throws IOException {
-        this.x = in.readInt() / 32;
-        this.y = in.readInt() / 32;
-        this.z = in.readInt() / 32;
-        this.yaw = in.readUnsignedByte();
-        this.pitch = in.readUnsignedByte();
+        this.x = (float) (in.readShort() / 32);
+        this.y = (float) (in.readShort() / 32);
+        this.z = (float) (in.readShort() / 32);
+        this.yaw = (in.readUnsignedByte() * 360) / 256f;
+        this.pitch = (in.readUnsignedByte() * 360) / 256f;
     }
 
     @Override
     public void write(NetOutput out) throws IOException {
-        out.writeInt(this.x * 32);
-        out.writeInt(this.y * 32);
-        out.writeInt(this.z * 32);
-        out.writeByte(this.yaw);
-        out.writeByte(this.pitch);
+        out.writeShort((short) (this.x * 32));
+        out.writeShort((short) (this.y * 32));
+        out.writeShort((short) (this.z * 32));
+        out.writeByte((byte) ((int) (this.yaw * 256 / 360) & 255));
+        out.writeByte((byte) ((int) (this.pitch * 256 / 360) & 255));
     }
 
-    public int getX() { return x; }
-    public int getY() { return y; }
-    public int getZ() { return z; }
-    public int getYaw() { return yaw; }
-    public int getPitch() { return pitch; }
+    public float getX() { return x; }
+    public float getY() { return y; }
+    public float getZ() { return z; }
+    public float getYaw() { return yaw; }
+    public float getPitch() { return pitch; }
     @Override
     public boolean isPriority() {
         return false;
