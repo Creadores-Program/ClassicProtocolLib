@@ -6,7 +6,6 @@ import com.github.steveice10.packetlib.ProxyInfo;
 import com.github.steveice10.packetlib.Server;
 import com.github.steveice10.packetlib.Session;
 import com.github.steveice10.packetlib.SessionFactory;
-import com.github.steveice10.packetlib.tcp.TcpConnectionListener;
 
 /**
  * A session factory used to create TCP sessions.
