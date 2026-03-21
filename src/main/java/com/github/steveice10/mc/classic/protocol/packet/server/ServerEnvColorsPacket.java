@@ -45,7 +45,7 @@ public class ServerEnvColorsPacket implements Packet {
 
     @Override
     public void write(NetOutput out) throws IOException {
-        out.writeByte(this.type);
+        out.writeByte((byte) this.type);
         out.writeShort(this.red);
         out.writeShort(this.green);
         out.writeShort(this.blue);
