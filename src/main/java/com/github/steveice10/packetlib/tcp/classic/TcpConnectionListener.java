@@ -3,7 +3,6 @@ package com.github.steveice10.packetlib.tcp.classic;
 import com.github.steveice10.packetlib.ConnectionListener;
 import com.github.steveice10.packetlib.Server;
 import com.github.steveice10.packetlib.packet.PacketProtocol;
-import com.github.steveice10.packetlib.tcp.TcpSession;
 import com.github.steveice10.packetlib.tcp.TcpPacketEncryptor;
 import com.github.steveice10.packetlib.tcp.TcpPacketSizer;
 import com.github.steveice10.packetlib.tcp.TcpServerSession;
