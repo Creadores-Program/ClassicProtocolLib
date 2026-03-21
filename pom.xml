@@ -56,7 +56,7 @@
         <dependency>
             <groupId>com.github.GeyserMC</groupId>
             <artifactId>packetlib</artifactId>
-            <version>1.5</version>
+            <version>1.8</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
