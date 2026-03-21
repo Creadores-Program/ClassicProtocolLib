@@ -32,9 +32,6 @@ public class ClientExtEntryPacket implements Packet {
 	public void read(NetInput in) throws IOException {
 		this.extName = ClassicPacketUtil.readString(in);
         this.version = in.readInt();
-		if(in.available() > 0){
-            in.readBytes(in.available());
-        }
 	}
 
 	@Override
