@@ -22,7 +22,7 @@ import com.github.steveice10.packetlib.event.server.SessionRemovedEvent;
 import com.github.steveice10.packetlib.event.session.DisconnectedEvent;
 import com.github.steveice10.packetlib.event.session.PacketReceivedEvent;
 import com.github.steveice10.packetlib.event.session.SessionAdapter;
-import com.github.steveice10.packetlib.tcp.TcpSessionFactory;
+import com.github.steveice10.packetlib.tcp.classic.TcpSessionFactory;
 
 public class MinecraftClassicProtocolTest {
     private static final boolean SPAWN_SERVER = true;
