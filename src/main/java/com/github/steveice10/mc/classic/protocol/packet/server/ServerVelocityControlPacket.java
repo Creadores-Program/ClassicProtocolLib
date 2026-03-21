@@ -10,17 +10,21 @@ public class ServerVelocityControlPacket implements Packet {
     private int xVelocity;
     private int yVelocity;
     private int zVelocity;
-    private int mode;
+    private boolean modeX;
+    private boolean modeY;
+    private boolean modeZ;
 
     @SuppressWarnings("unused")
     private ServerVelocityControlPacket() {
     }
 
-    public ServerVelocityControlPacket(int xVelocity, int yVelocity, int zVelocity, int mode) {
+    public ServerVelocityControlPacket(int xVelocity, int yVelocity, int zVelocity, boolean modeX, boolean modeY, boolean modeZ) {
         this.xVelocity = xVelocity;
         this.yVelocity = yVelocity;
         this.zVelocity = zVelocity;
-        this.mode = mode;
+        this.modeX = modeX;
+        this.modeY = modeY;
+        this.modeZ = modeZ;
     }
 
     @Override
@@ -28,7 +32,9 @@ public class ServerVelocityControlPacket implements Packet {
         this.xVelocity = in.readInt();
         this.yVelocity = in.readInt();
         this.zVelocity = in.readInt();
-        this.mode = in.readUnsignedByte();
+        this.modeX = in.readBoolean();
+        this.modeY = in.readBoolean();
+        this.modeZ = in.readBoolean();
     }
 
     @Override
@@ -36,13 +42,17 @@ public class ServerVelocityControlPacket implements Packet {
         out.writeInt(this.xVelocity);
         out.writeInt(this.yVelocity);
         out.writeInt(this.zVelocity);
-        out.writeByte(this.mode);
+        out.writeBoolean(this.modeX);
+        out.writeBoolean(this.modeY);
+        out.writeBoolean(this.modeZ);
     }
 
     public int getRawX() { return xVelocity; }
     public int getRawY() { return yVelocity; }
     public int getRawZ() { return zVelocity; }
-    public int getMode() { return mode; }
+    public boolean getModeX() { return modeX; }
+    public boolean getModeY() { return modeY; }
+    public boolean getModeZ() { return modeZ; }
 
     @Override
     public boolean isPriority() {
