@@ -5,7 +5,6 @@ import com.github.steveice10.packetlib.Server;
 import com.github.steveice10.packetlib.packet.PacketProtocol;
 import com.github.steveice10.packetlib.tcp.TcpPacketEncryptor;
 import com.github.steveice10.packetlib.tcp.TcpPacketSizer;
-import com.github.steveice10.packetlib.tcp.TcpServerSession;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
