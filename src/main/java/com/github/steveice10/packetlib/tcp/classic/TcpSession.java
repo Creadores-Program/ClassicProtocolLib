@@ -40,8 +40,8 @@ public abstract class TcpSession extends SimpleChannelInboundHandler<Packet> imp
     private PacketProtocol protocol;
 
     private int compressionThreshold = -1;
-    private int connectTimeout = 30;
-    private int readTimeout = 30;
+    private int connectTimeout = 60;
+    private int readTimeout = 60;
     private int writeTimeout = 0;
 
     private Map<String, Object> flags = new HashMap<String, Object>();
