@@ -100,6 +100,7 @@ public class ClassicProtocol extends PacketProtocol {
 		this.registerIncoming(0x21, ServerExtAddEntity2Packet.class);
 		this.registerIncoming(0x26, ServerBulkBlockUpdatePacket.class);
 		this.registerIncoming(0x13, ServerCustomBlockSupportLevelPacket.class);
+		this.registerIncoming(0x2D, ServerSetHotbarPacket.class);
 
 		this.registerOutgoing(0x00, ClientIdentificationPacket.class);
 		this.registerOutgoing(0x05, ClientSetBlockPacket.class);
@@ -158,6 +159,7 @@ public class ClassicProtocol extends PacketProtocol {
 		this.registerOutgoing(0x21, ServerExtAddEntity2Packet.class);
 		this.registerOutgoing(0x26, ServerBulkBlockUpdatePacket.class);
 		this.registerOutgoing(0x13, ServerCustomBlockSupportLevelPacket.class);
+		this.registerOutgoing(0x2D, ServerSetHotbarPacket.class);
 		session.addListener(new ServerListener());
 	}
 }
