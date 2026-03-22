@@ -15,7 +15,6 @@ import io.netty.channel.ChannelPipeline;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.handler.timeout.ReadTimeoutHandler;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 
@@ -84,7 +83,6 @@ public class TcpConnectionListener implements ConnectionListener {
                 session.refreshReadTimeoutHandler(channel);
                 session.refreshWriteTimeoutHandler(channel);
 
-                pipeline.addLast("readTimeoutHandler", new ReadTimeoutHandler(60));
                 pipeline.addLast("encryption", new TcpPacketEncryptor(session));
                 pipeline.addLast("sizer", new TcpPacketSizer(session));
                 pipeline.addLast("codec", new TcpPacketCodec(session));
