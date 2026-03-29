@@ -3,6 +3,7 @@ package com.github.steveice10.mc.classic.protocol.packet.server;
 import com.github.steveice10.packetlib.io.NetInput;
 import com.github.steveice10.packetlib.io.NetOutput;
 import com.github.steveice10.packetlib.packet.Packet;
+import com.github.steveice10.mc.classic.protocol.packet.ClassicPacketUtil;
 import java.io.IOException;
 
 public class ServerBulkBlockUpdatePacket implements Packet {
