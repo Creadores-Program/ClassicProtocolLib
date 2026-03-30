@@ -73,6 +73,7 @@ public class ClassicPacketUtil {
     public static void writeBulkIndices(NetOutput out, int[] i) throws IOException {
         int[] data = new int[256];
         System.arraycopy(i, 0, data, 0, Math.min(i.length, data.length));
+        out.writeInts(data);
     }
 
     public static byte[] readBulkBlocks(NetInput in, int len) throws IOException {
