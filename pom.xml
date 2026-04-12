@@ -51,35 +51,22 @@
         </repository>
     </repositories>
 
+    <dependencyManagement>
+             <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-bom</artifactId>
+                <version>4.2.12.Final</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+    </dependencyManagement>
+
     <dependencies>
-        <dependency>
-            <groupId>io.netty</groupId>
-            <artifactId>netty-all</artifactId>
-            <version>4.2.12.Final</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.netty</groupId>
-            <artifactId>netty-codec-haproxy</artifactId>
-            <version>4.2.12.Final</version>
-            <scope>compile</scope>
-            <optional>true</optional>
-        </dependency>
         <dependency>
             <groupId>com.github.GeyserMC</groupId>
             <artifactId>packetlib</artifactId>
             <version>1.8</version>
             <scope>compile</scope>
-            <exclusions>
-                     <exclusion>
-                              <groupId>io.netty</groupId>
-                              <artifactId>netty-all</artifactId>
-                     </exclusion>
-                     <exclusion>
-                              <groupId>io.netty</groupId>
-                              <artifactId>netty-codec-haproxy</artifactId>
-                     </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.alibaba.fastjson2</groupId>
