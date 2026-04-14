@@ -1,6 +1,5 @@
 package com.github.steveice10.mc.classic.protocol.packet.server;
 
-import com.github.steveice10.mc.classic.protocol.packet.ClassicPacketUtil;
 import com.github.steveice10.packetlib.io.NetInput;
 import com.github.steveice10.packetlib.io.NetOutput;
 import com.github.steveice10.packetlib.packet.Packet;
