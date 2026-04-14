@@ -61,6 +61,11 @@ public class ExtNames{
   public static final String BULKBLOCKUPDATE = "BulkBlockUpdate";
 
   /*
+   * Allows customising chat color codes
+   */
+  public static final String TEXTCOLORS = "TextColors";
+
+  /*
    * Allows retrieving precise details on mouse clicks
    */
   public static final String PLAYERCLICK = "PlayerClick";
