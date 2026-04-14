@@ -55,4 +55,8 @@ public class ServerSetTextColorPacket implements Packet {
     out.writeByte((byte) this.alpha);
     out.writeByte((byte) this.code);
   }
+  @Override
+  public boolean isPriority() {
+      return false;
+  }
 }
