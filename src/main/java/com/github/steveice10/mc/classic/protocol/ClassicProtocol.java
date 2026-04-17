@@ -18,6 +18,7 @@ public class ClassicProtocol extends PacketProtocol {
 
 	private String username;
 	private String verificationKey;
+	private boolean isCPE;
 
 	@SuppressWarnings("unused")
 	private ClassicProtocol() {
@@ -32,15 +33,27 @@ public class ClassicProtocol extends PacketProtocol {
 		this(username, "-");
 	}
 
-    /**
+	/**
      * Creates a new ClassicProtocol instance.
      *
      * @param username        Username to use when connecting.
      * @param verificationKey Verification key to use when connecting.
      */
-	public ClassicProtocol(String username, String verificationKey) {
+	public ClassicProtocol(String username, String verificationKey){
+		this(username, verificarionKey, false);
+	}
+
+    /**
+     * Creates a new ClassicProtocol instance.
+     *
+     * @param username        Username to use when connecting.
+     * @param verificationKey Verification key to use when connecting.
+	 * @paran isCPE Do I need to activate CPE?
+     */
+	public ClassicProtocol(String username, String verificationKey, boolean isCPE) {
 		this.username = username.contains("@") ? username.substring(0, username.indexOf("@")) : username;
 		this.verificationKey = verificationKey;
+		this.isCPE = isCPE;
 	}
 
     /**
@@ -49,7 +62,7 @@ public class ClassicProtocol extends PacketProtocol {
      * @param server Server URL information to use when connecting.
      */
 	public ClassicProtocol(ServerURLInfo server) {
-		this(server.getUsername(), server.getVerificationKey());
+		this(server.getUsername(), server.getVerificationKey(), true);
 	}
 
     @Override
@@ -114,6 +127,7 @@ public class ClassicProtocol extends PacketProtocol {
 		this.registerOutgoing(0x13, ClientCustomBlockSupportLevelPacket.class);
 		session.setFlag(ClassicConstants.USERNAME_KEY, this.username);
 		session.setFlag(ClassicConstants.VERIFICATION_KEY, this.verificationKey);
+		session.setFlag(ClassicConstants.ISCPE, this.isCPE);
 		session.addListener(new ClientListener());
 	}
 
