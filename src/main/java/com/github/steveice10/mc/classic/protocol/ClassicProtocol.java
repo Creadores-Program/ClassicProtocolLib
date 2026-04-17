@@ -40,7 +40,7 @@ public class ClassicProtocol extends PacketProtocol {
      * @param verificationKey Verification key to use when connecting.
      */
 	public ClassicProtocol(String username, String verificationKey){
-		this(username, verificarionKey, false);
+		this(username, verificationKey, false);
 	}
 
     /**
