@@ -12,7 +12,7 @@ import com.github.steveice10.packetlib.event.session.SessionAdapter;
 public class ClientListener extends SessionAdapter {
     @Override
     public void connected(ConnectedEvent event) {
-        event.getSession().send(new ClientIdentificationPacket(event.getSession().<String>getFlag(ClassicConstants.USERNAME_KEY), event.getSession().<String>getFlag(ClassicConstants.VERIFICATION_KEY), 0));
+        event.getSession().send(new ClientIdentificationPacket(event.getSession().<String>getFlag(ClassicConstants.USERNAME_KEY), event.getSession().<String>getFlag(ClassicConstants.VERIFICATION_KEY), event.getSession().<Boolean>getFlag(ClassicConstants.ISCPE, false)));
     }
 
     @Override
