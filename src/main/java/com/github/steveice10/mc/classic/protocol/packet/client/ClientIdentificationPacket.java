@@ -56,15 +56,7 @@ public class ClientIdentificationPacket implements Packet {
      * @param isCpe          Support CPE.
      */
     public ClientIdentificationPacket(String username, String verificationKey, boolean isCpe) {
-        this.protocolVersion = ClassicConstants.PROTOCOL_VERSION;
-        this.username = username;
-        this.verificationKey = verificationKey;
-        if(isCpe){
-            this.unused = 0x42;
-        }else{
-            this.unused = 0;
-        }
-		this.isCpe = isCpe;
+        this(username, verificationKey, (isCpe) ? 0x42 : 0);
     }
 
     /**
