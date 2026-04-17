@@ -22,6 +22,13 @@ public class ClassicConstants {
     public static final String USERNAME_KEY = "username";
 
     /**
+     * Flag key for Support CPE.
+     * <p>
+     * Available on both clients, set automatically based on provided isCPE.
+     */
+    public static final String ISCPE = "iscpe";
+
+    /**
      * Flag key for a session's verification key.
      * <p>
      * Available only on clients, set automatically based on provided key.
