@@ -35,8 +35,8 @@ public class ServerSetHotbarPacket implements Packet {
 
     @Override
     public void write(NetOutput out) throws IOException {
-        out.writeByte((byte) this.blockId);
-        out.writeByte((byte) this.hotbarIndex);
+        out.writeByte(this.blockId);
+        out.writeByte(this.hotbarIndex);
     }
 
     @Override
