@@ -11,9 +11,9 @@ public class ServerExtAddEntity2Packet implements Packet {
     private int entityId;
     private String name;
     private String skin;
-    private short x;
-    private short y;
-    private short z;
+    private float x;
+    private float y;
+    private float z;
     private int yaw;
     private int pitch;
 
@@ -37,9 +37,9 @@ public class ServerExtAddEntity2Packet implements Packet {
         this.entityId = in.readUnsignedByte();
         this.name = ClassicPacketUtil.readString(in);
         this.skin = ClassicPacketUtil.readString(in);
-        this.x = (short) (in.readShort() / 32);
-        this.y = (short) (in.readShort() / 32);
-        this.z = (short) (in.readShort() / 32);
+        this.x = (float) (in.readShort() / 32);
+        this.y = (float) (in.readShort() / 32);
+        this.z = (float) (in.readShort() / 32);
         this.yaw = in.readUnsignedByte();
         this.pitch = in.readUnsignedByte();
     }
@@ -49,9 +49,9 @@ public class ServerExtAddEntity2Packet implements Packet {
         out.writeByte(this.entityId);
         ClassicPacketUtil.writeString(out, this.name);
         ClassicPacketUtil.writeString(out, this.skin);
-        out.writeShort(this.x * 32);
-        out.writeShort(this.y * 32);
-        out.writeShort(this.z * 32);
+        out.writeShort((short) (this.x * 32));
+        out.writeShort((short) (this.y * 32));
+        out.writeShort((short) (this.z * 32));
         out.writeByte(this.yaw);
         out.writeByte(this.pitch);
     }
@@ -62,9 +62,9 @@ public class ServerExtAddEntity2Packet implements Packet {
 
     public int getYaw() { return yaw; }
     public int getPitch() { return pitch; }
-    public short getX() { return x; }
-    public short getY() { return y; }
-    public short getZ() { return z; }
+    public float getX() { return x; }
+    public float getY() { return y; }
+    public float getZ() { return z; }
 
     @Override public boolean isPriority() { return false; }
 }
