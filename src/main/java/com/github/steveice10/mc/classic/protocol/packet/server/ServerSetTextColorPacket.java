@@ -41,18 +41,18 @@ public class ServerSetTextColorPacket implements Packet {
   
   @Override
   public void read(NetInput in) throws IOException {
-    this.red = (int) in.readUnsignedByte();
-    this.green = (int) in.readUnsignedByte();
-    this.blue = (int) in.readUnsignedByte();
-    this.alpha = (int) in.readUnsignedByte();
+    this.red = in.readUnsignedByte();
+    this.green = in.readUnsignedByte();
+    this.blue = in.readUnsignedByte();
+    this.alpha = in.readUnsignedByte();
     this.code = (char) in.readUnsignedByte();
   }
   @Override
   public void write(NetOutput out) throws IOException {
-    out.writeByte((byte) this.red);
-    out.writeByte((byte) this.green);
-    out.writeByte((byte) this.blue);
-    out.writeByte((byte) this.alpha);
+    out.writeByte(this.red);
+    out.writeByte(this.green);
+    out.writeByte(this.blue);
+    out.writeByte(this.alpha);
     out.writeByte((byte) this.code);
   }
   @Override
