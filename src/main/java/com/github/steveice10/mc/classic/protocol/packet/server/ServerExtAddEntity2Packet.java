@@ -46,14 +46,14 @@ public class ServerExtAddEntity2Packet implements Packet {
 
     @Override
     public void write(NetOutput out) throws IOException {
-        out.writeByte((byte) this.entityId);
+        out.writeByte(this.entityId);
         ClassicPacketUtil.writeString(out, this.name);
         ClassicPacketUtil.writeString(out, this.skin);
         out.writeShort(this.x * 32);
         out.writeShort(this.y * 32);
         out.writeShort(this.z * 32);
-        out.writeByte((byte) this.yaw);
-        out.writeByte((byte) this.pitch);
+        out.writeByte(this.yaw);
+        out.writeByte(this.pitch);
     }
 
     public int getEntityId() { return entityId; }
