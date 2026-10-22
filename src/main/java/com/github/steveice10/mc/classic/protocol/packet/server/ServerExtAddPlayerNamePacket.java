@@ -57,7 +57,7 @@ public class ServerExtAddPlayerNamePacket implements Packet {
         ClassicPacketUtil.writeString(out, this.playerName);
         ClassicPacketUtil.writeString(out, this.listName);
         ClassicPacketUtil.writeString(out, this.groupName);
-        out.writeByte((byte) this.groupRank);
+        out.writeByte(this.groupRank);
     }
 
     @Override
