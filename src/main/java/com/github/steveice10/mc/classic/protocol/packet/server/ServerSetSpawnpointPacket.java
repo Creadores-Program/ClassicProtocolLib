@@ -39,8 +39,8 @@ public class ServerSetSpawnpointPacket implements Packet {
         out.writeShort((short) (this.x * 32));
         out.writeShort((short) (this.y * 32));
         out.writeShort((short) (this.z * 32));
-        out.writeByte((byte) ((int) (this.yaw * 256 / 360) & 255));
-        out.writeByte((byte) ((int) (this.pitch * 256 / 360) & 255));
+        out.writeByte((int) (this.yaw * 256 / 360) & 255);
+        out.writeByte((int) (this.pitch * 256 / 360) & 255);
     }
 
     public float getX() { return x; }
