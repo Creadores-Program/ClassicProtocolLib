@@ -27,7 +27,7 @@ public class ServerBulkBlockUpdatePacket implements Packet {
 
     @Override
     public void write(NetOutput out) throws IOException {
-        out.writeByte((byte) (this.blocks.length - 1));
+        out.writeByte(this.blocks.length - 1);
         ClassicPacketUtil.writeBulkIndices(out, this.indices);
         ClassicPacketUtil.writeBulkBlocks(out, this.blocks);
     }
